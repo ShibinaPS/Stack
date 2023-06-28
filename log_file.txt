@@ -1,0 +1,167 @@
+---------------------- Stack ----------------------
+{
+[STK_LFT_CANARY] = 233496045
+Capacity  = 15;
+Size      = 0;
+Data      = 00E10D1C;
+	{
+	[DATA_LFT_CANARY] = 233692845
+	data[0000] = 57005             <- POISON
+	data[0001] = 57005             <- POISON
+	data[0002] = 57005             <- POISON
+	data[0003] = 57005             <- POISON
+	data[0004] = 57005             <- POISON
+	data[0005] = 57005             <- POISON
+	data[0006] = 57005             <- POISON
+	data[0007] = 57005             <- POISON
+	data[0008] = 57005             <- POISON
+	data[0009] = 57005             <- POISON
+	data[0010] = 57005             <- POISON
+	data[0011] = 57005             <- POISON
+	data[0012] = 57005             <- POISON
+	data[0013] = 57005             <- POISON
+	data[0014] = 57005             <- POISON
+	[DATA_RGT_CANARY] = 233692845
+	}
+[STK_RGT_CANARY] = 233496045
+}
+
+----------------------------------------------------
+
+{
+[STK_LFT_CANARY] = 233496045
+Capacity  = 15;
+Size      = 1;
+Data      = 00E10D1C;
+	{
+	[DATA_LFT_CANARY] = 233692845
+	data[0000] = 15
+	data[0001] = 57005             <- POISON
+	data[0002] = 57005             <- POISON
+	data[0003] = 57005             <- POISON
+	data[0004] = 57005             <- POISON
+	data[0005] = 57005             <- POISON
+	data[0006] = 57005             <- POISON
+	data[0007] = 57005             <- POISON
+	data[0008] = 57005             <- POISON
+	data[0009] = 57005             <- POISON
+	data[0010] = 57005             <- POISON
+	data[0011] = 57005             <- POISON
+	data[0012] = 57005             <- POISON
+	data[0013] = 57005             <- POISON
+	data[0014] = 57005             <- POISON
+	[DATA_RGT_CANARY] = 233692845
+	}
+[STK_RGT_CANARY] = 233496045
+}
+
+----------------------------------------------------
+
+{
+[STK_LFT_CANARY] = 233496045
+Capacity  = 15;
+Size      = 2;
+Data      = 00E10D1C;
+	{
+	[DATA_LFT_CANARY] = 233692845
+	data[0000] = 15
+	data[0001] = 25
+	data[0002] = 57005             <- POISON
+	data[0003] = 57005             <- POISON
+	data[0004] = 57005             <- POISON
+	data[0005] = 57005             <- POISON
+	data[0006] = 57005             <- POISON
+	data[0007] = 57005             <- POISON
+	data[0008] = 57005             <- POISON
+	data[0009] = 57005             <- POISON
+	data[0010] = 57005             <- POISON
+	data[0011] = 57005             <- POISON
+	data[0012] = 57005             <- POISON
+	data[0013] = 57005             <- POISON
+	data[0014] = 57005             <- POISON
+	[DATA_RGT_CANARY] = 233692845
+	}
+[STK_RGT_CANARY] = 233496045
+}
+
+----------------------------------------------------
+
+{
+[STK_LFT_CANARY] = 233496045
+Capacity  = 15;
+Size      = 3;
+Data      = 00E10D1C;
+	{
+	[DATA_LFT_CANARY] = 233692845
+	data[0000] = 15
+	data[0001] = 25
+	data[0002] = 25
+	data[0003] = 57005             <- POISON
+	data[0004] = 57005             <- POISON
+	data[0005] = 57005             <- POISON
+	data[0006] = 57005             <- POISON
+	data[0007] = 57005             <- POISON
+	data[0008] = 57005             <- POISON
+	data[0009] = 57005             <- POISON
+	data[0010] = 57005             <- POISON
+	data[0011] = 57005             <- POISON
+	data[0012] = 57005             <- POISON
+	data[0013] = 57005             <- POISON
+	data[0014] = 57005             <- POISON
+	[DATA_RGT_CANARY] = 233692845
+	}
+[STK_RGT_CANARY] = 233496045
+}
+
+----------------------------------------------------
+
+{
+[STK_LFT_CANARY] = 233496045
+Capacity  = 15;
+Size      = 4;
+Data      = 00E10D1C;
+	{
+	[DATA_LFT_CANARY] = 233692845
+	data[0000] = 15
+	data[0001] = 25
+	data[0002] = 25
+	data[0003] = 25
+	data[0004] = 57005             <- POISON
+	data[0005] = 57005             <- POISON
+	data[0006] = 57005             <- POISON
+	data[0007] = 57005             <- POISON
+	data[0008] = 57005             <- POISON
+	data[0009] = 57005             <- POISON
+	data[0010] = 57005             <- POISON
+	data[0011] = 57005             <- POISON
+	data[0012] = 57005             <- POISON
+	data[0013] = 57005             <- POISON
+	data[0014] = 57005             <- POISON
+	[DATA_RGT_CANARY] = 233692845
+	}
+[STK_RGT_CANARY] = 233496045
+}
+
+----------------------------------------------------
+
+{
+[STK_LFT_CANARY] = 233496045
+Capacity  = 7;
+Size      = 3;
+Data      = 00E10D1C;
+	{
+	[DATA_LFT_CANARY] = 233692845
+	data[0000] = 15
+	data[0001] = 25
+	data[0002] = 25
+	data[0003] = 57005             <- POISON
+	data[0004] = 57005             <- POISON
+	data[0005] = 57005             <- POISON
+	data[0006] = 57005             <- POISON
+	[DATA_RGT_CANARY] = 233692845
+	}
+[STK_RGT_CANARY] = 233496045
+}
+
+----------------------------------------------------
+
