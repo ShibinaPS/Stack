@@ -73,7 +73,7 @@ int stack_ctor(Stack* stack)
 
 void stack_push(Stack* stack, elem_t elem)
 {
-    // ASSERT_OK(stack);
+    ASSERT_OK(stack);
 
     if(stack->size == stack->capacity - 1)
     {

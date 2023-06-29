@@ -144,11 +144,11 @@ void assert_dtor(Stack* stack)
 
 long long calculate_hash(elem_t* pointer, size_t size)
 {
-    unsigned long hash = 0;
+    long long hash = 0;
 
     for(size_t i = 0; i < size; i++)
     {
-        hash = (unsigned long)(((hash << 5) + hash) + (unsigned long)pointer[i]);
+        hash = (long long)(((hash << 5) + hash) + (long long)pointer[i]);
     }
     return hash;
 }
