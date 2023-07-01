@@ -30,7 +30,7 @@ int stk_verify(Stack* stk)
 
 #   else
 
-        stk->error_code = (stk->data == nullptr)                * ERROR_STACK_NULLPTR  +
+        stk->error_code =   (stk->data == nullptr)              * ERROR_STACK_NULLPTR  +
                             (stk->size > stk->capacity)         * ERROR_STACK_CAPACITY +
                             (stk->data_hash != data_hash(stk))  * ERROR_DATA_HASH;
 
@@ -40,8 +40,8 @@ int stk_verify(Stack* stk)
 
 #   ifdef CANARY_PROTECTION
 
-        stk->error_code = (stk->data == nullptr)             * ERROR_STACK_NULLPTR      +
-                            (stk->size > stk->capacity)      * ERROR_STACK_CAPACITY     +
+        stk->error_code =   (stk->data == nullptr)             * ERROR_STACK_NULLPTR      +
+                            (stk->size > stk->capacity)        * ERROR_STACK_CAPACITY     +
                             (stk->data_lft_cnr != DATA_CANARY) * ERROR_DATA_LFT_CNR_DEAD  +
                             (stk->data_rgt_cnr != DATA_CANARY) * ERROR_DATA_RGT_CNR_DEAD  +
                             (stk->stk_lft_cnr != STK_CANARY)   * ERROR_STK_LFT_CNR_DEAD   +

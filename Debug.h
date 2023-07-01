@@ -5,15 +5,15 @@
 
 #define STACK_DUMP(stk) stk_dump(stk, __FILE__, __LINE__, __PRETTY_FUNCTION__)
 
-#define ASSERT_OK(stk)                    \
-    do                                      \
-    {                                       \
-        if(stk_verify(stk) != 0)        \
-        {                                   \
-            STACK_DUMP(stk);              \
-            assert_dtor(stk);             \
-        }                                   \
-    } while(0)                              \
+#define ASSERT_OK(stk)              \
+    do                              \
+    {                               \
+        if(stk_verify(stk) != 0)    \
+        {                           \
+            STACK_DUMP(stk);        \
+            assert_dtor(stk);       \
+        }                           \
+    } while(0)                      \
 
 //=============================================================================================================
 
