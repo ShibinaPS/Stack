@@ -12,11 +12,16 @@
 
 //=============================================================================================================
 
+#define TYPE "%d\n"
+
+//=============================================================================================================
+
 typedef int elem_t;
 
 //=============================================================================================================
 
 /**
+ * 
  * @brief Stack structure
 */
 typedef struct Stack
@@ -36,7 +41,7 @@ typedef struct Stack
 
     size_t stk_rgt_cnr  = 0;
 
-} stack;
+}stk;
 
 //=============================================================================================================
 
@@ -64,96 +69,96 @@ const size_t STK_CANARY        = 0xDEADDED;
 //=============================================================================================================
 
 /**
- * @brief  Creates and initializes stack.
+ * @brief  Creates and initializes stk.
  * 
- * @param  stack the stack pointer
+ * @param  stk the stk pointer
  * 
  * @return int error
 */
 
-int stack_ctor(Stack* stack); 
+int stk_ctor(Stack* stk); 
 
 //=============================================================================================================
 
 /**
- * @brief  Pushes a new element to the stack.
+ * @brief  Pushes a new element to the stk.
  * 
- * @param  stack the stack pointer
+ * @param  stk the stack pointer
  * @param  elem a new value pushing to the stack
  * 
 */
 
-void stack_push(Stack* stack, elem_t elem);
+void stk_push(Stack* stk, elem_t elem);
 
 //=============================================================================================================
 
 /**
  * @brief Deletes the value from the stack.
  * 
- * @param stack the stack pointer
+ * @param stk the stack pointer
  * @param elem the value deleting from the stack
  * 
 */
 
-void stack_pop(Stack* stack, elem_t* elem);
+void stk_pop(Stack* stk, elem_t* elem);
 
 //=============================================================================================================
 
 /**
  * @brief Fills the fields of the stack with NAN value after its creating.
  * 
- * @param stack the stack pointer
+ * @param stk the stack pointer
  * @param start the start position of filling stack with NAN value
  * @param finish the finish position of filling stack with NAN value
  * 
 */
 
-void fill_with_poison(Stack* stack, size_t start, size_t finish);
+void fill_with_poison(Stack* stk, size_t start, size_t finish);
 
 //=============================================================================================================
 
 /**
  * @brief Changes the size of stack taking into consideration the degree of fulness.
  * 
- * @param stack the stack pointer
+ * @param stk the stack pointer
  * @param new_capacity new stack capacity
  * 
 */
-void stack_resize(Stack* stack, size_t new_capacity);
+void stk_resize(Stack* stk, size_t new_capacity);
 
 //=============================================================================================================
 
 /**
  * @brief  Opens file "log_file.txt".
  * 
- * @param  stack the stack pointer
+ * @param  stk the stack pointer
  * 
  * @return int error
 */
 
-int open_log_file(Stack* stack);
+int open_log_file(Stack* stk);
 
 //=============================================================================================================
 
 /**
  * @brief  Prints new changes in file "log_file.txt".
  * 
- * @param  stack the stack pointer
+ * @param  stk the stack pointer
  * 
  * @return int 
 */
 
-int print_log_file(Stack* stack);
+int print_log_file(Stack* stk);
 
 //=============================================================================================================
 
 /**
  * @brief  Deletes the stack, frees memory, fills stack filelds with POISON value.
  * 
- * @param  stack the stack pointer
+ * @param  stk the stack pointer
 */
 
-void stack_dtor(Stack* stack);
+void stk_dtor(Stack* stk);
 
 //=============================================================================================================
 

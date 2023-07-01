@@ -5,19 +5,18 @@
 
 int main()
 {
-    Stack stack = {};
-    elem_t num = 15;
+    Stack stk = {};
+    elem_t num = 10;
 
-    if (stack_ctor(&stack) == 0)
+    if (stk_ctor(&stk) == 0)
     {
-        stack_push(&stack, 15);
-        stack_push(&stack, 25);
-        stack_push(&stack, 25);
-        stack_push(&stack, 25);
-        // printf("%d\n", stack.data[0]);
+        stk_push(&stk, 15);
+        stk_push(&stk, 20);
+        stk_push(&stk, 35);
 
-        stack_pop(&stack, &num);
+        stk_pop(&stk, &num);
+        stk_pop(&stk, &num);
 
-        stack_dtor(&stack);
+        stk_dtor(&stk);
     }
 }

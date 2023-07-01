@@ -3,158 +3,161 @@
 
 //=============================================================================================================
 
-const size_t INITIAL_STK_CAP = 15;
+const size_t INITIAL_STK_CAP = 10;
 
 //=============================================================================================================
 
-int stack_ctor(Stack* stack)
+int stk_ctor(Stack* stk)
 {
-    if (stack == nullptr)
+    if (stk == nullptr)
     {
         printf("Error code: %d\n", ERROR_STACK_NULLPTR);
         return ERROR_STACK_NULLPTR;
     }
 
-    stack->capacity = INITIAL_STK_CAP;
+    stk->capacity = INITIAL_STK_CAP;
 
-    if (open_log_file(stack) != 0)
+    if (open_log_file(stk) != 0)
     {
         printf("Error code: %d\n", ERROR_LOG_FILE_OPEN);
         return ERROR_LOG_FILE_OPEN;
     }
 
 #ifdef CANARY_PROTECTION
-    stack->stk_lft_cnr = STK_CANARY;
-    stack->stk_rgt_cnr = STK_CANARY;
+    stk->stk_lft_cnr = STK_CANARY;
+    stk->stk_rgt_cnr = STK_CANARY;
 
-    stack->data = (elem_t*)calloc(stack->capacity + 2, sizeof(elem_t));
+    stk->data = (elem_t*)calloc(stk->capacity + 2, sizeof(elem_t));
 
-    if(stack->data == nullptr)
+    if(stk->data == nullptr)
     {
-        fclose(stack->log_file);
+        fclose(stk->log_file);
         printf("ERROR CODE: %d\n", ERROR_DATA_CALLOC);
         return ERROR_DATA_CALLOC;
     }
 
-    *stack->data = (elem_t)DATA_CANARY;
+    *stk->data = (elem_t)DATA_CANARY;
 
-    stack->data_lft_cnr = (size_t)*stack->data;
-    stack->data_rgt_cnr = (size_t)*(stack->data + stack->capacity + 1); 
+    stk->data_lft_cnr = (size_t)*stk->data;
+    stk->data_rgt_cnr = (size_t)*(stk->data + stk->capacity + 1); 
 
-    stack->data_lft_cnr = DATA_CANARY;
-    stack->data_rgt_cnr = DATA_CANARY;
+    stk->data_lft_cnr = DATA_CANARY;
+    stk->data_rgt_cnr = DATA_CANARY;
 
-    stack->data++;
+    stk->data++;
 #else
-    stack->data = (elem_t*)calloc(stack->capacity, sizeof(elem_t));
+    stk->data = (elem_t*)calloc(stk->capacity, sizeof(elem_t));
 
-    if(stack->data == nullptr)
+    if(stk->data == nullptr)
     {
-        fclose(stack->log_file);
+        fclose(stk->log_file);
         printf("ERROR CODE: %d\n", ERROR_DATA_CALLOC);
         return ERROR_DATA_CALLOC;
     }
 #endif //CANARY_PROTECTION
 
+    fill_with_poison(stk, 0, stk->capacity);
+
 #ifdef HASH_PROTECTION
 
-    stack->data_hash = data_hash(stack);
+    stk->data_hash = data_hash(stk);   
 
 #endif //HASH_PROTECTION
 
-    fill_with_poison(stack, 0, stack->capacity);
-    fprintf(stack->log_file, "---------------------- Stack ----------------------\n");
-    print_log_file(stack);
+    // printf("%lld, %lld\n", stk->data_hash, data_hash(stk));
+
+    fprintf(stk->log_file, "---------------------- Stack ----------------------\n");
+    print_log_file(stk);
 
     return 0;
 }
 
 //=============================================================================================================
 
-void stack_push(Stack* stack, elem_t elem)
+void stk_push(Stack* stk, elem_t elem)
 {
-    ASSERT_OK(stack);
+    ASSERT_OK(stk);
 
-    if(stack->size == stack->capacity - 1)
+    if(stk->size == stk->capacity - 1)
     {
-        stack_resize(stack, stack->capacity * RESIZE_FACTOR);
+        stk_resize(stk, stk->capacity * RESIZE_FACTOR);
     }
 
-    stack->data[stack->size] = elem;
-    stack->size++;
+    stk->data[stk->size] = elem;
+    stk->size++;
 
 #ifdef HASH_PROTECTION
-    stack->data_hash = data_hash(stack);
+    stk->data_hash = data_hash(stk);
 #endif //HASH_PROTECTION
 
-    print_log_file(stack);
+    print_log_file(stk);
 }
 
 //=============================================================================================================
 
-void stack_pop(Stack* stack, elem_t* elem)
+void stk_pop(Stack* stk, elem_t* elem)
 {
-    ASSERT_OK(stack);
+    ASSERT_OK(stk);
 
-    stack->size--;
+    stk->size--;
 
-    *elem = stack->data[stack->size];
-    stack->data[stack->size] = POISON;
+    *elem = stk->data[stk->size];
+    stk->data[stk->size] = POISON;
 
 #ifdef HASH_PROTECTION
-    stack->data_hash = data_hash(stack);
+    stk->data_hash = data_hash(stk);
 #endif //HASH_PROTECTION
 
-    if(stack->size * RESIZE_POP_FACTOR <= stack->capacity)  //при размере стека <= 1/4 от capacity,
+    if(stk->size * RESIZE_POP_FACTOR <= stk->capacity)  //при размере стека <= 1/4 от capacity,
     {                                                      
-        stack_resize(stack, stack->capacity/RESIZE_FACTOR); //последний уменьшается в 2 раза
+        stk_resize(stk, stk->capacity/RESIZE_FACTOR); //последний уменьшается в 2 раза
     }
 
-    print_log_file(stack);
+    print_log_file(stk);
 
-    if (stack->size == 0)
+    if (stk->size == 0)
     {
-        fprintf(stack->log_file, "Stack is empty...\n");
+        fprintf(stk->log_file, "Stack is empty...\n");
     }
 
 }
 
 //=============================================================================================================
 
-void stack_resize(Stack* stack, size_t new_capacity)
+void stk_resize(Stack* stk, size_t new_capacity)
 {
-    ASSERT_OK(stack);
+    ASSERT_OK(stk);
 
-    size_t old_capacity = stack->capacity;
-    stack->capacity     = new_capacity;
+    size_t old_capacity = stk->capacity;
+    stk->capacity     = new_capacity;
 
 #ifdef CANARY_PROTECTION
 
-    stack->data--;
+    stk->data--;
 
-    stack->data = (elem_t*)realloc(stack->data, (stack->capacity + 2) * sizeof(elem_t));
+    stk->data = (elem_t*)realloc(stk->data, (stk->capacity + 2) * sizeof(elem_t));
 
-    if(stack->data == nullptr)
+    if(stk->data == nullptr)
     {
         printf("Error code: %d.\n", ERROR_DATA_REALLOC);
         exit(ERROR_DATA_REALLOC);
     }
 
-    *stack->data = (elem_t)DATA_CANARY;
+    *stk->data = (elem_t)DATA_CANARY;
 
-    stack->data_lft_cnr  = (size_t)*stack->data;
-    stack->data_rgt_cnr  = (size_t)*(stack->data + stack->capacity + 1);
+    stk->data_lft_cnr  = (size_t)*stk->data;
+    stk->data_rgt_cnr  = (size_t)*(stk->data + stk->capacity + 1);
     
-    stack->data_lft_cnr = DATA_CANARY;
-    stack->data_rgt_cnr = DATA_CANARY;
+    stk->data_lft_cnr = DATA_CANARY;
+    stk->data_rgt_cnr = DATA_CANARY;
 
-    stack->data++;
+    stk->data++;
 
 #else
 
-    stack->data = (elem_t*)realloc(stack->data, stack->capacity * sizeof(elem_t));
+    stk->data = (elem_t*)realloc(stk->data, stk->capacity * sizeof(elem_t));
 
-    if(stack->data == nullptr)
+    if(stk->data == nullptr)
     {
         printf("Error code: %d.\n", ERROR_DATA_REALLOC);
         exit(ERROR_DATA_REALLOC);
@@ -164,38 +167,38 @@ void stack_resize(Stack* stack, size_t new_capacity)
 
 #ifdef HASH_PROTECTION
 
-    stack->data_hash = data_hash(stack);
+    stk->data_hash = data_hash(stk);
 
 #endif //HASH_PROTECTION
 
-    fill_with_poison(stack, old_capacity, stack->capacity);
+    fill_with_poison(stk, old_capacity, stk->capacity);
 
 #ifdef HASH_PROTECTION
 
-    stack->data_hash = data_hash(stack);
+    stk->data_hash = data_hash(stk);
 
 #endif //HASH_PROTECTION
 }
 
 //=============================================================================================================
 
-void fill_with_poison(Stack* stack, size_t start, size_t finish)
+void fill_with_poison(Stack* stk, size_t start, size_t finish)
 {
-    ASSERT_OK(stack);
+    ASSERT_OK(stk);
     
     for (size_t i = start; i < finish; i++)
     {
-        stack->data[i] = POISON;
+        stk->data[i] = POISON;
     }
 }
 
 //=============================================================================================================
 
-int open_log_file(Stack* stack)
+int open_log_file(Stack* stk)
 {
-    stack->log_file = fopen("log_file.txt", "w");
+    stk->log_file = fopen("log_file.txt", "w");
 
-    if (stack->log_file == nullptr)
+    if (stk->log_file == nullptr)
     {
         return ERROR_LOG_FILE_OPEN;
     }
@@ -205,83 +208,83 @@ int open_log_file(Stack* stack)
 
 //=============================================================================================================
 
-int print_log_file(Stack* stack)
+int print_log_file(Stack* stk)
 {
-    fprintf(stack->log_file, "{\n");
+    fprintf(stk->log_file, "{\n");
 
     #ifdef CANARY_PROTECTION
-        fprintf(stack->log_file, "[STK_LFT_CANARY] = %lu\n", stack->stk_lft_cnr);
+        fprintf(stk->log_file, "[STK_LFT_CANARY] = %lu\n", stk->stk_lft_cnr);
     #endif //CANARY_PROTECTION
 
-        fprintf(stack->log_file, "Capacity  = %lu;\n", stack->capacity);
+        fprintf(stk->log_file, "capacity  = %lu;\n", stk->capacity);
 
-        fprintf(stack->log_file, "Size      = %lu;\n", stack->size);
+        fprintf(stk->log_file, "size      = %lu;\n", stk->size);
 
     #ifdef HASH_PROTECTION
-        fprintf(stack->log_file, "data_hash = [%lld];\n", stack->data_hash);
+        fprintf(stk->log_file, "data_hash = [%lld];\n", stk->data_hash);
     #endif //HASH_PROTECTION
 
-        fprintf(stack->log_file, "Data      = %p;\n", stack->data);
+        fprintf(stk->log_file, "data      = %p;\n", stk->data);
 
-        fprintf(stack->log_file, "\t{\n");
+        fprintf(stk->log_file, "\t{\n");
 
     #ifdef CANARY_PROTECTION
-        fprintf(stack->log_file, "\t[DATA_LFT_CANARY] = %lu\n", stack->data_lft_cnr);
+        fprintf(stk->log_file, "\t[DATA_LFT_CANARY] = %lu\n", stk->data_lft_cnr);
     #endif //CANARY_PROTECTION
 
-        for(size_t i = 0; i < stack->capacity; i++)
+        for(size_t i = 0; i < stk->capacity; i++)
         {
-            if(stack->data[i] == POISON)
+            if(stk->data[i] == POISON)
             {
-                fprintf(stack->log_file, "\tdata[%04lu] = %d             <- POISON\n", i, stack->data[i]);
+                fprintf(stk->log_file, "\tdata[%04lu] = %d             <- POISON\n", i, stk->data[i]);
             }
 
             else
             {
-                fprintf(stack->log_file, "\tdata[%04lu] = %d\n", i, stack->data[i]);
+                fprintf(stk->log_file, "\tdata[%04lu] = " TYPE, i, stk->data[i]);
             }
         }
 
     #ifdef CANARY_PROTECTION
-        fprintf(stack->log_file, "\t[DATA_RGT_CANARY] = %lu\n", stack->data_rgt_cnr);
+        fprintf(stk->log_file, "\t[DATA_RGT_CANARY] = %lu\n", stk->data_rgt_cnr);
     #endif //CANARY_PROTECTION
 
-    fprintf(stack->log_file, "\t}\n");
+    fprintf(stk->log_file, "\t}\n");
 
     #ifdef CANARY_PROTECTION
-        fprintf(stack->log_file, "[STK_RGT_CANARY] = %lu\n", stack->stk_rgt_cnr);
+        fprintf(stk->log_file, "[STK_RGT_CANARY] = %lu\n", stk->stk_rgt_cnr);
     #endif //CANARY_PROTECTION
 
-    fprintf(stack->log_file, "}\n\n");
+    fprintf(stk->log_file, "}\n\n");
 
-    fprintf(stack->log_file, "----------------------------------------------------\n");
+    fprintf(stk->log_file, "----------------------------------------------------\n");
 
-    fprintf(stack->log_file, "\n");
+    fprintf(stk->log_file, "\n");
 
 }
 
 //=============================================================================================================
 
-void stack_dtor(Stack* stack)
+void stk_dtor(Stack* stk)
 {
-    ASSERT_OK(stack);
+    ASSERT_OK(stk);
 
-    fill_with_poison(stack, 0, stack->capacity);
+    fill_with_poison(stk, 0, stk->capacity);
 
 #ifdef CANARY_PROTECTION
-    stack->data--;
+    stk->data--;
 #endif //CANARY_PROTECTION
 
-    stack->capacity     = 0;
-    stack->size         = 0;
-    stack->error_code   = 0;
-    stack->data_hash    = 0;
-    stack->data_lft_cnr = 0;
-    stack->data_rgt_cnr = 0;
+    stk->capacity     = 0;
+    stk->size         = 0;
+    stk->error_code   = 0;
+    stk->data_hash    = 0;
+    stk->data_lft_cnr = 0;
+    stk->data_rgt_cnr = 0;
 
-    free(stack->data);
-    stack->data = nullptr;
+    free(stk->data);
+    stk->data = nullptr;
 
-    fclose(stack->log_file);
-    stack->log_file = nullptr;
+    fclose(stk->log_file);
+    stk->log_file = nullptr;
 }

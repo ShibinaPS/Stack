@@ -3,15 +3,15 @@
 
 //=============================================================================================================
 
-#define STACK_DUMP(stack) stack_dump(stack, __FILE__, __LINE__, __PRETTY_FUNCTION__)
+#define STACK_DUMP(stk) stk_dump(stk, __FILE__, __LINE__, __PRETTY_FUNCTION__)
 
-#define ASSERT_OK(stack)                    \
+#define ASSERT_OK(stk)                    \
     do                                      \
     {                                       \
-        if(stack_verify(stack) != 0)        \
+        if(stk_verify(stk) != 0)        \
         {                                   \
-            STACK_DUMP(stack);              \
-            assert_dtor(stack);             \
+            STACK_DUMP(stk);              \
+            assert_dtor(stk);             \
         }                                   \
     } while(0)                              \
 
@@ -35,36 +35,36 @@ enum StackErrors
 //=============================================================================================================
 
 /**
- * @brief Prints the error data to the file stack_log.txt.
+ * @brief Prints the error data to the file stk_log.txt.
  * 
- * @param stack the stack pointer
+ * @param stk the stack pointer
  * @param file_name the name of the file that contains the function
  * @param line line number where the error was found
  * @param function_name the name of the function in which the error was found
  */
 
-void stack_dump(Stack* stack, const char* file_name, size_t line, const char* function_name);
+void stk_dump(Stack* stk, const char* file_name, size_t line, const char* function_name);
 
 //=============================================================================================================
 
 /**
  * @brief Considers the error code as the sum of errors in binary code. 
  * 
- * @param stack the stack pointer
+ * @param stk the stack pointer
 */
 
-int stack_verify(Stack* stack);
+int stk_verify(Stack* stk);
 
 //=============================================================================================================
 
 /**
  * @brief Decodes the errors and prints the name of the error to the file.
  * 
- * @param  stack the stack pointer
- * @return int stack->error_code
+ * @param  stk the stack pointer
+ * @return int stk->error_code
 */
 
-void stack_error_decoder(Stack* stack);
+void stk_error_decoder(Stack* stk);
 
 //=============================================================================================================
 
@@ -72,10 +72,10 @@ void stack_error_decoder(Stack* stack);
  * @brief If an error was found in the middle of running the program, this function
  *        removes the stack, fills stack fields with POISON value, frees memory.
  * 
- * @param stack the stack pointer
+ * @param stk the stack pointer
  */
 
-void assert_dtor(Stack* stack);
+void assert_dtor(Stack* stk);
 
 //=============================================================================================================
 
@@ -94,11 +94,11 @@ long long calculate_hash(elem_t* pointer, size_t size);
 /**
  * @brief Applies function calculate_hash(...) for calculate hash of stack data.
  * 
- * @param stack the stack pointer
+ * @param stk the stack pointer
  * @return long long 
  */
 
-long long data_hash(Stack* stack);
+long long data_hash(Stack* stk);
 
 //=============================================================================================================
 
