@@ -3,9 +3,9 @@
 
 //=============================================================================================================
 
-void stk_dump(Stack* stk, const char* file_name, size_t line, const char* function_name)
+void stk_dump(struct Stack* stk, const char* file_name, size_t line, const char* function_name)
 {
-    fprintf(stk->log_file, "in %s at %s line - %lu:\n", function_name, file_name, line);
+    fprintf(stk->log_file, "in %s at %s line - %u:\n", function_name, file_name, line);
 
     fprintf(stk->log_file, "Stack[%p]\n", stk->data);
 
@@ -14,19 +14,20 @@ void stk_dump(Stack* stk, const char* file_name, size_t line, const char* functi
 
 //=============================================================================================================
 
-int stk_verify(Stack* stk)
+int stk_verify(struct Stack* stk)
 {
 #ifdef HASH_PROTECTION
 
 #   ifdef CANARY_PROTECTION
 
-        stk->error_code =   (stk->data == nullptr)                * ERROR_STACK_NULLPTR     +
-                            (stk->size > stk->capacity)           * ERROR_STACK_CAPACITY    +
-                            (stk->data_lft_cnr != DATA_CANARY)    * ERROR_DATA_LFT_CNR_DEAD +
-                            (stk->data_rgt_cnr != DATA_CANARY)    * ERROR_DATA_RGT_CNR_DEAD +
-                            (stk->stk_lft_cnr != STK_CANARY)      * ERROR_STK_LFT_CNR_DEAD  +
-                            (stk->stk_rgt_cnr != STK_CANARY)      * ERROR_STK_RGT_CNR_DEAD  +
-                            (stk->data_hash != data_hash(stk))    * ERROR_DATA_HASH;
+        stk->error_code =   (stk->data == nullptr)                 * ERROR_STACK_NULLPTR     +
+                            (stk->size > stk->capacity)            * ERROR_STACK_CAPACITY    +
+                            (stk->pop_counter > stk->push_counter) * ERROR_POP_PUSH_COUNTER  +
+                            (stk->data_lft_cnr != DATA_CANARY)     * ERROR_DATA_LFT_CNR_DEAD +
+                            (stk->data_rgt_cnr != DATA_CANARY)     * ERROR_DATA_RGT_CNR_DEAD +
+                            (stk->stk_lft_cnr != STK_CANARY)       * ERROR_STK_LFT_CNR_DEAD  +
+                            (stk->stk_rgt_cnr != STK_CANARY)       * ERROR_STK_RGT_CNR_DEAD  +
+                            (stk->data_hash != data_hash(stk))     * ERROR_DATA_HASH;
 
 #   else
 
@@ -62,11 +63,12 @@ int stk_verify(Stack* stk)
 
 //=============================================================================================================
 
-void stk_error_decoder(Stack* stk)
+void stk_error_decoder(struct Stack* stk)
 {
     if (stk->error_code == 0)
     {
         fprintf(stk->log_file, "-> OK\n");
+        exit(0);
     }
 
     else
@@ -79,6 +81,11 @@ void stk_error_decoder(Stack* stk)
         if(stk->error_code & ERROR_STACK_CAPACITY)
         {
             fprintf(stk->log_file, "ERROR_STACK_CAPACITY\n");
+        }
+
+        if(stk->error_code & ERROR_POP_PUSH_COUNTER)
+        {
+            fprintf(stk->log_file, "ERROR_POP_PUSH_COUNTER\n");
         }
 
     #ifdef CANARY_PROTECTION
@@ -100,6 +107,7 @@ void stk_error_decoder(Stack* stk)
         if(stk->error_code & ERROR_STK_RGT_CNR_DEAD)
         {
             fprintf(stk->log_file, "ERROR_STK_RGT_CNR_DEAD\n");
+            exit(0);
         }
     #endif //CANARY_PROTECTION
     
@@ -108,15 +116,17 @@ void stk_error_decoder(Stack* stk)
         if(stk->error_code & ERROR_DATA_HASH)
         {
             fprintf(stk->log_file, "ERROR_DATA_HASH\n");
+            exit(0);
         }
 
     #endif //HASH_PROTECTION
     }
+    exit(0);
 }
 
 //=============================================================================================================
 
-void assert_dtor(Stack* stk)
+void assert_dtor(struct Stack* stk)
 {
     fill_with_poison(stk, 0, stk->capacity);
 
@@ -155,7 +165,7 @@ long long calculate_hash(elem_t* pointer, size_t size)
 
 //=============================================================================================================
 
-long long data_hash(Stack* stk)
+long long data_hash(struct Stack* stk)
 {
     return calculate_hash(stk->data, stk->capacity);
 }

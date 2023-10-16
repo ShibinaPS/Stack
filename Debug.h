@@ -30,6 +30,7 @@ enum StackErrors
       ERROR_DATA_LFT_CNR_DEAD = 1 << 4,
       ERROR_DATA_RGT_CNR_DEAD = 1 << 5,
       ERROR_DATA_HASH         = 1 << 6,
+      ERROR_POP_PUSH_COUNTER  = 1 << 7,
 };
 
 //=============================================================================================================
@@ -43,7 +44,7 @@ enum StackErrors
  * @param function_name the name of the function in which the error was found
  */
 
-void stk_dump(Stack* stk, const char* file_name, size_t line, const char* function_name);
+void stk_dump(struct Stack* stk, const char* file_name, size_t line, const char* function_name);
 
 //=============================================================================================================
 
@@ -53,7 +54,7 @@ void stk_dump(Stack* stk, const char* file_name, size_t line, const char* functi
  * @param stk the stack pointer
 */
 
-int stk_verify(Stack* stk);
+int stk_verify(struct Stack* stk);
 
 //=============================================================================================================
 
@@ -64,7 +65,7 @@ int stk_verify(Stack* stk);
  * @return int stk->error_code
 */
 
-void stk_error_decoder(Stack* stk);
+void stk_error_decoder(struct Stack* stk);
 
 //=============================================================================================================
 
@@ -75,7 +76,7 @@ void stk_error_decoder(Stack* stk);
  * @param stk the stack pointer
  */
 
-void assert_dtor(Stack* stk);
+void assert_dtor(struct Stack* stk);
 
 //=============================================================================================================
 
@@ -98,7 +99,7 @@ long long calculate_hash(elem_t* pointer, size_t size);
  * @return long long 
  */
 
-long long data_hash(Stack* stk);
+long long data_hash(struct Stack* stk);
 
 //=============================================================================================================
 

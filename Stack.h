@@ -4,6 +4,7 @@
 //=============================================================================================================
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //=============================================================================================================
 
@@ -24,13 +25,16 @@ typedef int elem_t;
  * 
  * @brief Stack structure
 */
-typedef struct Stack
+struct Stack
 {
     size_t stk_lft_cnr  = 0;
 
     FILE* log_file  = nullptr;
     size_t capacity = 0;
     size_t size     = 0;
+    size_t void_dtor = 0;
+    size_t pop_counter = 0;
+    size_t push_counter = 0;
 
     size_t data_lft_cnr = 0;
     elem_t* data        = nullptr;
@@ -41,7 +45,7 @@ typedef struct Stack
 
     size_t stk_rgt_cnr  = 0;
 
-}stk;
+};
 
 //=============================================================================================================
 
@@ -52,10 +56,11 @@ typedef struct Stack
 
 enum ErrorCodes
 {
-    ERROR_DATA_REALLOC  = 1,
-    ERROR_STACK_NULLPTR = 2,
-    ERROR_LOG_FILE_OPEN = 3,
-    ERROR_DATA_CALLOC   = 4,
+    ERROR_DATA_REALLOC   = 0,
+    ERROR_STACK_NULLPTR  = 1,
+    ERROR_LOG_FILE_OPEN  = 2,
+    ERROR_DATA_CALLOC    = 3,
+    ERROR_POP_AFTER_DTOR = 4,
 };
 
 //=============================================================================================================
@@ -76,7 +81,7 @@ const size_t STK_CANARY        = 0xDEADDED;
  * @return int error
 */
 
-int stk_ctor(Stack* stk); 
+int stk_ctor(struct Stack* stk); 
 
 //=============================================================================================================
 
@@ -88,7 +93,7 @@ int stk_ctor(Stack* stk);
  * 
 */
 
-void stk_push(Stack* stk, elem_t elem);
+void stk_push(struct Stack* stk, elem_t elem);
 
 //=============================================================================================================
 
@@ -100,7 +105,7 @@ void stk_push(Stack* stk, elem_t elem);
  * 
 */
 
-void stk_pop(Stack* stk, elem_t* elem);
+void stk_pop(struct Stack* stk, elem_t* elem);
 
 //=============================================================================================================
 
@@ -113,7 +118,7 @@ void stk_pop(Stack* stk, elem_t* elem);
  * 
 */
 
-void fill_with_poison(Stack* stk, size_t start, size_t finish);
+void fill_with_poison(struct Stack* stk, size_t start, size_t finish);
 
 //=============================================================================================================
 
@@ -124,7 +129,7 @@ void fill_with_poison(Stack* stk, size_t start, size_t finish);
  * @param new_capacity new stack capacity
  * 
 */
-void stk_resize(Stack* stk, size_t new_capacity);
+void stk_resize(struct Stack* stk, size_t new_capacity);
 
 //=============================================================================================================
 
@@ -136,7 +141,7 @@ void stk_resize(Stack* stk, size_t new_capacity);
  * @return int error
 */
 
-int open_log_file(Stack* stk);
+int open_log_file(struct Stack* stk);
 
 //=============================================================================================================
 
@@ -148,7 +153,7 @@ int open_log_file(Stack* stk);
  * @return int 
 */
 
-int print_log_file(Stack* stk);
+void print_log_file(struct Stack* stk);
 
 //=============================================================================================================
 
@@ -158,7 +163,7 @@ int print_log_file(Stack* stk);
  * @param  stk the stack pointer
 */
 
-void stk_dtor(Stack* stk);
+void stk_dtor(struct Stack* stk);
 
 //=============================================================================================================
 

@@ -7,7 +7,7 @@ const size_t INITIAL_STK_CAP = 10;
 
 //=============================================================================================================
 
-int stk_ctor(Stack* stk)
+int stk_ctor(struct Stack* stk)
 {
     if (stk == nullptr)
     {
@@ -74,12 +74,15 @@ int stk_ctor(Stack* stk)
 
 //=============================================================================================================
 
-void stk_push(Stack* stk, elem_t elem)
+void stk_push(struct Stack* stk, elem_t elem)
 {
     ASSERT_OK(stk);
 
+    stk->push_counter++;
+
     if(stk->size == stk->capacity - 1)
     {
+        fprintf(stderr, "%d %s", __LINE__, __PRETTY_FUNCTION__);
         stk_resize(stk, stk->capacity * RESIZE_FACTOR);
     }
 
@@ -95,8 +98,15 @@ void stk_push(Stack* stk, elem_t elem)
 
 //=============================================================================================================
 
-void stk_pop(Stack* stk, elem_t* elem)
+void stk_pop(struct Stack* stk, elem_t* elem)
 {
+    stk->pop_counter++;
+    if(stk->void_dtor > 0)
+    {
+        printf("Error! You can`t call pop after d_tor!\n");
+        exit(ERROR_POP_AFTER_DTOR);
+    }
+
     ASSERT_OK(stk);
 
     stk->size--;
@@ -124,7 +134,7 @@ void stk_pop(Stack* stk, elem_t* elem)
 
 //=============================================================================================================
 
-void stk_resize(Stack* stk, size_t new_capacity)
+void stk_resize(struct Stack* stk, size_t new_capacity)
 {
     ASSERT_OK(stk);
 
@@ -182,7 +192,7 @@ void stk_resize(Stack* stk, size_t new_capacity)
 
 //=============================================================================================================
 
-void fill_with_poison(Stack* stk, size_t start, size_t finish)
+void fill_with_poison(struct Stack* stk, size_t start, size_t finish)
 {
     ASSERT_OK(stk);
     
@@ -194,7 +204,7 @@ void fill_with_poison(Stack* stk, size_t start, size_t finish)
 
 //=============================================================================================================
 
-int open_log_file(Stack* stk)
+int open_log_file(struct Stack* stk)
 {
     stk->log_file = fopen("log_file.txt", "w");
 
@@ -208,17 +218,17 @@ int open_log_file(Stack* stk)
 
 //=============================================================================================================
 
-int print_log_file(Stack* stk)
+void print_log_file(struct Stack* stk)
 {
     fprintf(stk->log_file, "{\n");
 
     #ifdef CANARY_PROTECTION
-        fprintf(stk->log_file, "[STK_LFT_CANARY] = %lu\n", stk->stk_lft_cnr);
+        fprintf(stk->log_file, "[STK_LFT_CANARY] = %u\n", stk->stk_lft_cnr);
     #endif //CANARY_PROTECTION
 
-        fprintf(stk->log_file, "capacity  = %lu;\n", stk->capacity);
+        fprintf(stk->log_file, "capacity  = %u;\n", stk->capacity);
 
-        fprintf(stk->log_file, "size      = %lu;\n", stk->size);
+        fprintf(stk->log_file, "size      = %u;\n", stk->size);
 
     #ifdef HASH_PROTECTION
         fprintf(stk->log_file, "data_hash = [%lld];\n", stk->data_hash);
@@ -229,30 +239,30 @@ int print_log_file(Stack* stk)
         fprintf(stk->log_file, "\t{\n");
 
     #ifdef CANARY_PROTECTION
-        fprintf(stk->log_file, "\t[DATA_LFT_CANARY] = %lu\n", stk->data_lft_cnr);
+        fprintf(stk->log_file, "\t[DATA_LFT_CANARY] = %u\n", stk->data_lft_cnr);
     #endif //CANARY_PROTECTION
 
         for(size_t i = 0; i < stk->capacity; i++)
         {
             if(stk->data[i] == POISON)
             {
-                fprintf(stk->log_file, "\tdata[%04lu] = %d             <- POISON\n", i, stk->data[i]);
+                fprintf(stk->log_file, "\tdata[%04u] = %d             <- POISON\n", i, stk->data[i]);
             }
 
             else
             {
-                fprintf(stk->log_file, "\tdata[%04lu] = " TYPE, i, stk->data[i]);
+                fprintf(stk->log_file, "\tdata[%04u] = " TYPE, i, stk->data[i]);
             }
         }
 
     #ifdef CANARY_PROTECTION
-        fprintf(stk->log_file, "\t[DATA_RGT_CANARY] = %lu\n", stk->data_rgt_cnr);
+        fprintf(stk->log_file, "\t[DATA_RGT_CANARY] = %u\n", stk->data_rgt_cnr);
     #endif //CANARY_PROTECTION
 
     fprintf(stk->log_file, "\t}\n");
 
     #ifdef CANARY_PROTECTION
-        fprintf(stk->log_file, "[STK_RGT_CANARY] = %lu\n", stk->stk_rgt_cnr);
+        fprintf(stk->log_file, "[STK_RGT_CANARY] = %u\n", stk->stk_rgt_cnr);
     #endif //CANARY_PROTECTION
 
     fprintf(stk->log_file, "}\n\n");
@@ -265,11 +275,13 @@ int print_log_file(Stack* stk)
 
 //=============================================================================================================
 
-void stk_dtor(Stack* stk)
+void stk_dtor(struct Stack* stk)
 {
     ASSERT_OK(stk);
 
     fill_with_poison(stk, 0, stk->capacity);
+
+    stk->void_dtor++;
 
 #ifdef CANARY_PROTECTION
     stk->data--;
@@ -287,4 +299,6 @@ void stk_dtor(Stack* stk)
 
     fclose(stk->log_file);
     stk->log_file = nullptr;
+
+    //return 0;
 }

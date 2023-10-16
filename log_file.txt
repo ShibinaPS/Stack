@@ -4,7 +4,7 @@
 capacity  = 10;
 size      = 0;
 data_hash = [2728364376718745570];
-data      = 00D315BC;
+data      = 00B20CFC;
 	{
 	[DATA_LFT_CANARY] = 233692845
 	data[0000] = 57005             <- POISON
@@ -28,11 +28,11 @@ data      = 00D315BC;
 [STK_LFT_CANARY] = 233496045
 capacity  = 10;
 size      = 1;
-data_hash = [83373880651444100];
-data      = 00D315BC;
+data_hash = [86390627137571045];
+data      = 00B20CFC;
 	{
 	[DATA_LFT_CANARY] = 233692845
-	data[0000] = 15
+	data[0000] = 80
 	data[0001] = 57005             <- POISON
 	data[0002] = 57005             <- POISON
 	data[0003] = 57005             <- POISON
@@ -53,11 +53,11 @@ data      = 00D315BC;
 [STK_LFT_CANARY] = 233496045
 capacity  = 10;
 size      = 2;
-data_hash = [3229685540980715];
-data      = 00D315BC;
+data_hash = [6246432027107660];
+data      = 00B20CFC;
 	{
 	[DATA_LFT_CANARY] = 233692845
-	data[0000] = 15
+	data[0000] = 80
 	data[0001] = 20
 	data[0002] = 57005             <- POISON
 	data[0003] = 57005             <- POISON
@@ -78,13 +78,13 @@ data      = 00D315BC;
 [STK_LFT_CANARY] = 233496045
 capacity  = 10;
 size      = 3;
-data_hash = [801712844581025];
-data      = 00D315BC;
+data_hash = [3817521724962476];
+data      = 00B20CFC;
 	{
 	[DATA_LFT_CANARY] = 233692845
-	data[0000] = 15
+	data[0000] = 80
 	data[0001] = 20
-	data[0002] = 35
+	data[0002] = 13
 	data[0003] = 57005             <- POISON
 	data[0004] = 57005             <- POISON
 	data[0005] = 57005             <- POISON
@@ -103,11 +103,11 @@ data      = 00D315BC;
 [STK_LFT_CANARY] = 233496045
 capacity  = 5;
 size      = 2;
-data_hash = [82524170];
-data      = 00D315BC;
+data_hash = [159609035];
+data      = 00B20CFC;
 	{
 	[DATA_LFT_CANARY] = 233692845
-	data[0000] = 15
+	data[0000] = 80
 	data[0001] = 20
 	data[0002] = 57005             <- POISON
 	data[0003] = 57005             <- POISON
@@ -123,11 +123,11 @@ data      = 00D315BC;
 [STK_LFT_CANARY] = 233496045
 capacity  = 2;
 size      = 1;
-data_hash = [57500];
-data      = 00D315BC;
+data_hash = [59645];
+data      = 00B20CFC;
 	{
 	[DATA_LFT_CANARY] = 233692845
-	data[0000] = 15
+	data[0000] = 80
 	data[0001] = 57005             <- POISON
 	[DATA_RGT_CANARY] = 233692845
 	}
@@ -136,3 +136,23 @@ data      = 00D315BC;
 
 ----------------------------------------------------
 
+{
+[STK_LFT_CANARY] = 233496045
+capacity  = 1;
+size      = 0;
+data_hash = [57005];
+data      = 00B20CFC;
+	{
+	[DATA_LFT_CANARY] = 233692845
+	data[0000] = 57005             <- POISON
+	[DATA_RGT_CANARY] = 233692845
+	}
+[STK_RGT_CANARY] = 233496045
+}
+
+----------------------------------------------------
+
+Stack is empty...
+in void stk_pop(Stack*, elem_t*) at Stack.cpp line - 110:
+Stack[00B20CFC]
+ERROR_POP_PUSH_COUNTER
